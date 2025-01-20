@@ -1,0 +1,6 @@
+{
+    "token": "discord bot token here (create bot on discord dev portal)",
+    "chan": "channel name here",
+    "ban_reason": "pRaider -|||-",
+    "channel_amount": 50
+}
